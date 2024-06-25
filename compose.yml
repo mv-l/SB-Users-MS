@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: users-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      TZ: Europe/Moscow
+#    volumes:
+#      - ~/docker/postgres:/var/lib/postgresql/data
+    networks:
+      - users-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 5s
+      retries: 4
+
+  ms:
+    image: oldhook/ms-users:${APP_VERSION}
+    container_name: users
+    ports:
+      - "${PORT}:8080"
+    environment:
+      TZ: Europe/Moscow
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - users-net
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  users-net:
+    driver: bridge

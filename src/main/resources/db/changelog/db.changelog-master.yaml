@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - includeAll:
+      path: db/changelog/changeset/2024_02
+      errorIfMissingOrEmpty: false
