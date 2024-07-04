@@ -1,0 +1,27 @@
+[versions]
+spring-actuator = "3.2.1"
+spring-data-jpa = "3.2.1"
+spring-web = "3.2.1"
+spring-validation = "3.2.1"
+spring-webflux = "3.2.1"
+spring-test = "3.2.1"
+liquibase = "4.26.0"
+postgres-driver = "42.7.2"
+modelmapper = "3.2.0"
+testcontainers-jupiter = "1.19.8"
+testcontainers-postgresql = "1.19.8"
+equalsverifier = "3.16.1"
+
+[libraries]
+spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-actuator" }
+spring-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-data-jpa" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-web" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-validation" }
+spring-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-webflux" }
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-test" }
+liquibase = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
+postgres-driver = { module = "org.postgresql:postgresql", version.ref = "postgres-driver" }
+modelmapper = { module = "org.modelmapper:modelmapper", version.ref = "modelmapper" }
+testcontainers-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-jupiter" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers-postgresql" }
+equalsverifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier" }

@@ -15,10 +15,10 @@ import java.util.Optional;
 public class AddInfoService {
 
     private final UserService userService;
-    private final AddInfoRepository addInfoRepository;
+    private final AddInfoRepository repository;
 
     public Iterable<AdditionalInfo> getAll(@NotNull Long userId) {
-        return addInfoRepository.findAllByUserId(userId);
+        return repository.findAllByUserId(userId);
     }
 
     @Transactional
@@ -26,19 +26,22 @@ public class AddInfoService {
                                  @NotNull AdditionalInfo addInfo) {
         // ToDo Проверить одновременное добавление нескольких записей. М.б. проблемы из-за пустого id
         User user = userService.getRefById(userId); // Ошибка при отсутствии
+        // Т.к. equals и hashCode используют только id, то сперва сохраняем в БД, чтобы присвоился id.
+        addInfo.setUser(user);
+        repository.save(addInfo);
+        // И только после сохранения в БД добавляем к родителю.
         user.addAddInfo(addInfo);
-        userService.save(user);
         return addInfo;
     }
 
     public Optional<AdditionalInfo> getByIdAndUserId(@NotNull Long infoId,
                                                      @NotNull Long userId) {
-        return addInfoRepository.findByIdAndUserId(infoId, userId);
+        return repository.findByIdAndUserId(infoId, userId);
     }
 
     @Transactional
     public AdditionalInfo update(Long userId, Long infoId, AdditionalInfo info) {
-        Optional<AdditionalInfo> dbInfo = addInfoRepository.findByIdAndUserId(infoId, userId);
+        Optional<AdditionalInfo> dbInfo = repository.findByIdAndUserId(infoId, userId);
         if (dbInfo.isEmpty()) {
             return null;
         }
@@ -48,11 +51,11 @@ public class AddInfoService {
     }
 
     public boolean checkExists(Long userId, Long infoId) {
-        return addInfoRepository.existsByIdAndUserId(infoId, userId);
+        return repository.existsByIdAndUserId(infoId, userId);
     }
 
     @Transactional
     public void deleteByIdAndUserId(@NotNull Long infoId, @NotNull Long userId) {
-        addInfoRepository.deleteByIdAndUserId(infoId, userId);
+        repository.deleteByIdAndUserId(infoId, userId);
     }
 }

@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'io.freefair.lombok' version '8.6'
+    id 'jacoco'
+}
+
+group = 'ru.mvlsoft'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs.spring.data.jpa
+    implementation libs.spring.actuator
+    implementation libs.spring.web
+    implementation libs.spring.validation
+    implementation libs.liquibase
+    implementation libs.modelmapper
+    testImplementation libs.spring.test
+    testImplementation libs.equalsverifier
+    runtimeOnly libs.postgres.driver
+}
+
+testing {
+    suites {
+        configureEach {
+            useJUnitJupiter()
+        }
+
+        integTest(JvmTestSuite) {
+            testType = TestSuiteType.INTEGRATION_TEST
+            dependencies {
+                implementation project()
+                implementation libs.spring.data.jpa
+                implementation libs.liquibase
+                implementation libs.spring.web
+                implementation libs.spring.test
+                implementation libs.testcontainers.jupiter
+                implementation libs.testcontainers.postgresql
+                implementation libs.spring.webflux
+            }
+        }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.9
+            }
+        }
+    }
+}
