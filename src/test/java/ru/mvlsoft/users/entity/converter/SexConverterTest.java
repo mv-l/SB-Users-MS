@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.mvlsoft.users.entity.converter.SexConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.mvlsoft.users.entity.enums.UserSex.FEMALE;
 import static ru.mvlsoft.users.entity.enums.UserSex.MALE;
 
@@ -13,12 +14,12 @@ class SexConverterTest {
     @Test
     void convertToDatabaseColumn() {
         assertEquals(FEMALE.getCode(), converter.convertToDatabaseColumn(FEMALE));
-        assertEquals(null, converter.convertToDatabaseColumn(null));
+        assertNull(converter.convertToDatabaseColumn(null));
     }
 
     @Test
     void convertToEntityAttribute() {
         assertEquals(MALE, converter.convertToEntityAttribute(MALE.getCode()));
-        assertEquals(null, converter.convertToEntityAttribute(null));
+        assertNull(converter.convertToEntityAttribute(null));
     }
 }

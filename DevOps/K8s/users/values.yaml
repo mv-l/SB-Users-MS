@@ -1,0 +1,65 @@
+appName: users
+
+apps:
+
+  db:
+    appName: users-db
+    replicasCount: 1
+    container:
+      imageName: postgres
+      imageVersion: 16.2
+      port: 5432
+      env:
+      - name: POSTGRES_USER
+        valueFrom:
+          secretKeyRef:
+            name: users-secrets
+            key: db_user
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: users-secrets
+            key: db_pass
+      - name: POSTGRES_DB
+        valueFrom:
+          configMapKeyRef:
+            name: users-config
+            key: name
+    service:
+      port: 5432
+  
+  backend:
+    appName: users-backend
+    replicasCount: 2
+    container:
+      imageName: mvll/ms-users
+      imageVersion: 0.2.2
+      port: 8080
+      env:
+      - name: DB_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: users-config
+            key: db_host
+      - name: DB_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: users-config
+            key: db_port
+      - name: DB_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: users-config
+            key: name
+      - name: DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: users-secrets
+            key: db_user
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: users-secrets
+            key: db_pass
+    service:
+      port: 8080

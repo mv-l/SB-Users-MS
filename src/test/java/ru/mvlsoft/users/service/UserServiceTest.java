@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.mvlsoft.users.entity.User;
 import ru.mvlsoft.users.repository.UserRepository;
-import ru.mvlsoft.users.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +19,7 @@ class UserServiceTest {
 
     private final UserRepository repository = Mockito.mock();
     private final UserService service = new UserService(repository);
-    List<User> users = new ArrayList<>();
+    final List<User> users = new ArrayList<>();
     private Long sequence = 0L;
 
     Long getSequenceNextVal() {
@@ -73,12 +72,4 @@ class UserServiceTest {
 
     }
 
-    @Test
-    void updateUser() {}
-
-    @Test
-    void checkUserExistsById() {}
-
-    @Test
-    void deleteUser() {}
 }

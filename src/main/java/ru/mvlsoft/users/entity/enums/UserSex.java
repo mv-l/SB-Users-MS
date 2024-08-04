@@ -1,15 +1,15 @@
 package ru.mvlsoft.users.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum UserSex {
     MALE("M"), FEMALE("F");
 
-    private String code;
+    private final String code;
 
-    private UserSex(String code) {
+    UserSex(String code) {
         this.code = code.toUpperCase();
     }
 
-    public String getCode() {
-        return code;
-    }
 }

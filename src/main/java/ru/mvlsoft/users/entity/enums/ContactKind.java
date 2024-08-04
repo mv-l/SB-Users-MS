@@ -1,15 +1,15 @@
 package ru.mvlsoft.users.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ContactKind {
     PHONE("PHONE"), EMAIL("EMAIL");
 
-    private String code;
+    private final String code;
 
-    private ContactKind(String code) {
+    ContactKind(String code) {
         this.code = code.toUpperCase();
     }
 
-    public String getCode() {
-        return code;
-    }
 }

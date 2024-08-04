@@ -1,15 +1,15 @@
 package ru.mvlsoft.users.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum UserAdditionalInfoKind {
     SOFT_SKILLS("S_SKILLS"), HOBBY("HOBBY");
 
-    private String code;
+    private final String code;
 
-    private UserAdditionalInfoKind(String code) {
+    UserAdditionalInfoKind(String code) {
         this.code = code.toUpperCase();
     }
 
-    public String getCode() {
-        return code;
-    }
 }

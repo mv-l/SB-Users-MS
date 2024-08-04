@@ -1,10 +1,9 @@
-# Один образ и для сборки проекта и для генерации JRE.
-FROM maven:3.9.5-eclipse-temurin-21-alpine as build
+FROM gradle:8.8.0-jdk21-alpine as build
 
 # Собираем проект.
 COPY . /temp
 WORKDIR /temp
-RUN mvn clean package
+RUN gradle clean build -x test
 
 # Генерируем JRE.
 RUN ["jlink", "--compress=2", \
@@ -14,8 +13,8 @@ RUN ["jlink", "--compress=2", \
      "--output", "/slim-jre"]
 
 # Делаем финальный образ.
-FROM alpine:3.20
+FROM alpine:3.20.1
 COPY --from=build  /slim-jre /opt/jdk
-COPY --from=build /temp/target/*.jar /opt/app.jar
+COPY --from=build /temp/build/libs/users-0.0.1-SNAPSHOT.jar /opt/app.jar
 ENV PATH=$PATH:/opt/jdk/bin
 CMD ["sh", "-c", "java -jar /opt/app.jar"]

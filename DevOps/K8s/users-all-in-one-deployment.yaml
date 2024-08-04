@@ -1,0 +1,180 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: users-configmap
+data:
+  name: "users"
+  db_host: "users-db" # service name
+  db_port: "5432"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: users-secrets
+stringData:
+  db_user: "some_user"
+  db_pass: "some_password"
+
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: postgres-pv-claim
+#   labels:
+#     app: postgres
+#     tier: database
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-db
+  labels:
+    app: users-db
+spec:
+  selector:
+    matchLabels:
+      app: users-db
+  template:
+    metadata:
+      labels:
+        app: users-db
+    spec:
+      containers:
+        - name: users-postgres
+          image: postgres:16.2
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          # ports:
+          #   - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: users-secrets
+                  key: db_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-secrets
+                  key: db_pass
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: users-configmap
+                  key: name
+          # volumeMounts:
+          #   - mountPath: /var/lib/postgresql/data
+          #     name: postgres-persistance-storage
+      # volumes:
+      #   - name: postgres-persistance-storage
+      #     persistentVolumeClaim:
+      #       claimName: postgres-pv-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-db
+spec:
+  selector:
+    app: users-db
+  ports:
+    - port: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-backend
+  labels:
+    app: users-backend
+spec:
+  selector:
+    matchLabels:
+      app: users-backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: users-backend
+    spec:
+      containers:
+        - name: users-backend
+          image: mvll/ms-users:0.2.2
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          # ports:
+          #   - containerPort: 8080
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: users-configmap
+                  key: db_host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: users-configmap
+                  key: db_port
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: users-configmap
+                  key: name
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: users-secrets
+                  key: db_user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-secrets
+                  key: db_pass
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-backend
+spec:
+  selector:
+    app: users-backend
+  #type: NodePort
+  ports:
+    - protocol: TCP
+      targetPort: 8080  # pod port
+      port: 8080        # service port
+      #nodePort: 30000   # для типа NodePort. Для minikube нужно запустить 'minikube service users-backend'
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: users-backend
+spec:
+  rules:
+  - host: users.local
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: users-backend
+            port: 
+              number: 8080

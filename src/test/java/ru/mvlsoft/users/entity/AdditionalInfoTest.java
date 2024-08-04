@@ -45,14 +45,18 @@ class AdditionalInfoTest {
         Exception ex = assertThrows(NullPointerException.class, () ->
                 new AdditionalInfo(null, "value")
         );
+        assertTrue(ex.getMessage().contains(MARKED_NON_NULL_BUT_IS_NULL));
+
         ex = assertThrows(NullPointerException.class, () ->
                 new AdditionalInfo(HOBBY, null)
         );
         assertTrue(ex.getMessage().contains(MARKED_NON_NULL_BUT_IS_NULL));
+
         ex = assertThrows(NullPointerException.class, () ->
                 new AdditionalInfo(null, HOBBY, "value")
         );
         assertTrue(ex.getMessage().contains(MARKED_NON_NULL_BUT_IS_NULL));
+
         ex = assertThrows(NullPointerException.class, () ->
                 new AdditionalInfo(null, new User(), HOBBY, "value")
         );

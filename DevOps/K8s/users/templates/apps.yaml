@@ -1,0 +1,6 @@
+{{- range $key, $val := .Values.apps }}
+    {{- template "users.deployment" $val }}
+---
+    {{- template "users.service" $val }}
+---
+{{- end}}

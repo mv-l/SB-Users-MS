@@ -224,9 +224,7 @@ class ITApi {
             assertEquals(infoDto.getValidToDate(), createdInfo.getValidToDate());
         });
 
-        resp.expectHeader().value("Location", s -> {
-            assertTrue(s.matches("^" + usersURI + "/\\d+/addinfo/\\d+$"));
-        });
+        resp.expectHeader().value("Location", s -> assertTrue(s.matches("^" + usersURI + "/\\d+/addinfo/\\d+$")));
     }
 
     @Test

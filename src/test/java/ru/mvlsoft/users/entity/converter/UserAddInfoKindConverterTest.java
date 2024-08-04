@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.mvlsoft.users.entity.converter.UserAddInfoKindConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.mvlsoft.users.entity.enums.UserAdditionalInfoKind.HOBBY;
 import static ru.mvlsoft.users.entity.enums.UserAdditionalInfoKind.SOFT_SKILLS;
 
@@ -13,12 +14,12 @@ class UserAddInfoKindConverterTest {
     @Test
     void convertToDatabaseColumn() {
         assertEquals(HOBBY.getCode(), converter.convertToDatabaseColumn(HOBBY));
-        assertEquals(null, converter.convertToDatabaseColumn(null));
+        assertNull(converter.convertToDatabaseColumn(null));
     }
 
     @Test
     void convertToEntityAttribute() {
         assertEquals(SOFT_SKILLS, converter.convertToEntityAttribute(SOFT_SKILLS.getCode()));
-        assertEquals(null, converter.convertToEntityAttribute(null));
+        assertNull(converter.convertToEntityAttribute(null));
     }
 }
