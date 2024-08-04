@@ -20,7 +20,7 @@ import java.util.Date;
 public class AdditionalInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_sequence")
-    @SequenceGenerator(name = "users_sequence", initialValue = 1, allocationSize = 10)
+    @SequenceGenerator(name = "users_sequence", allocationSize = 10)
     @EqualsAndHashCode.Include
     private Long id;
 

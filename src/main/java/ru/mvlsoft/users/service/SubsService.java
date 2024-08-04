@@ -13,7 +13,7 @@ import ru.mvlsoft.users.repository.SubscriptionRepository;
 public class SubsService {
 
     private final UserService userService;
-    private final SubscriptionRepository subsRepository;
+    private final SubscriptionRepository repository;
 
     @Transactional
     public void createSubscriber(@NotNull Long publisherId,
@@ -21,11 +21,12 @@ public class SubsService {
         User publisher = userService.getRefById(publisherId);
         User subscriber = userService.getRefById(subscriberId);
         Subscription subscription = new Subscription(publisher, subscriber);
-        subsRepository.save(subscription);
-        //publisher.addSubscriber(subscriber);
+        repository.save(subscription);
+        publisher.getSubscribers().add(subscription);
+        subscriber.getPublishers().add(subscription);
     }
 
     public Iterable<Subscription> getAllSubscribers(@NotNull Long publisherUserId) {
-        return subsRepository.findAllByPublisherId(publisherUserId);
+        return repository.findAllByPublisherId(publisherUserId);
     }
 }
